@@ -1,0 +1,11 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "author": "Catherine",
+      "authorAvatar": "@sample/posts_avatars",
+      "published": "14 мая в 23:23",
+      "content": "Тест"
+    }
+  ]
+}
