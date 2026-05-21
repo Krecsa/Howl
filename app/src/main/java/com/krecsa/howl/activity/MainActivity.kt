@@ -1,15 +1,17 @@
 package com.krecsa.howl.activity
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.krecsa.howl.R
 import com.krecsa.howl.adapter.PostsAdapter
 import com.krecsa.howl.databinding.ActivityMainBinding
+import com.krecsa.howl.utils.AndroidUtils
 import com.krecsa.howl.viewmodel.PostViewModel
-
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,11 +28,30 @@ class MainActivity : AppCompatActivity() {
         val viewModel: PostViewModel by viewModels()
         val adapter = PostsAdapter(
             { viewModel.likeById(it.id.toLong()) },
-            { viewModel.shareById(it.id.toLong()) }
+            { viewModel.shareById(it.id.toLong()) },
+            { viewModel.removeById(it.id.toLong()) }
         )
         binding.list?.adapter = adapter
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
+        }
+        binding.save?.setOnClickListener {
+            val content = binding.content.text?.toString().orEmpty()
+
+            if (content.isBlank()) {
+                Toast.makeText(
+                    this,
+                    R.string.content_is_blank_error,
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                return@setOnClickListener
+            }
+            viewModel.savePost(content)
+            binding.content.setText("")
+            binding.content.clearFocus()
+
+            AndroidUtils.hideKeyboard(binding.content)
         }
     }
 }

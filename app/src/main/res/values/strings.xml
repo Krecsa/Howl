@@ -2,6 +2,8 @@
     <string name="app_name">Howl</string>
     <string name="description_post_author_avatar">Post author avatar</string>
     <string name="description_post_menu">Post menu</string>
+    <string name="menu_remove">Delete</string>
+    <string name="content_is_blank_error">A post cannot be empty</string>
     <string name="description_post_like">Like</string>
     <string name="description_post_share">Share</string>
 </resources>
