@@ -16,11 +16,13 @@ import kotlin.collections.remove
 typealias LikeListener = (Post) -> Unit
 typealias ShareListener = (Post) -> Unit
 typealias RemoveListener = (Post) -> Unit
+typealias EditListener = (Post) -> Unit
 
 class PostsAdapter(
     private val likeListener: LikeListener,
     private val shareListener: ShareListener,
-    private val removeListener: RemoveListener
+    private val removeListener: RemoveListener,
+    private val editListener: EditListener
 ) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -28,7 +30,8 @@ class PostsAdapter(
             binding,
             likeListener,
             shareListener,
-            removeListener
+            removeListener,
+            editListener
         )
     }
 
@@ -48,7 +51,8 @@ class PostViewHolder(
     private val binding: CardPostBinding,
     private val likeListener: LikeListener,
     private val shareListener: ShareListener,
-    private val removeListener: RemoveListener
+    private val removeListener: RemoveListener,
+    private val editListener: EditListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) {
@@ -72,6 +76,10 @@ class PostViewHolder(
                     inflate(R.menu.menu_post)
                     setOnMenuItemClickListener { item ->
                         when (item.itemId) {
+                            R.id.edit -> {
+                                editListener(post)
+                                true
+                            }
                             R.id.remove -> {
                                 removeListener(post)
                                 true

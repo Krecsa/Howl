@@ -1,7 +1,7 @@
 package com.krecsa.howl.activity
 
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -27,30 +27,42 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel: PostViewModel by viewModels()
         val adapter = PostsAdapter(
-            { viewModel.likeById(it.id.toLong()) },
-            { viewModel.shareById(it.id.toLong()) },
-            { viewModel.removeById(it.id.toLong()) }
+            likeListener = { viewModel.likeById(it.id) },
+            shareListener = { viewModel.shareById(it.id) },
+            removeListener = { viewModel.removeById(it.id) },
+            editListener = { viewModel.edit(it) }
         )
-        binding.list?.adapter = adapter
+
+        binding.list.adapter = adapter
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
         }
-        binding.save?.setOnClickListener {
-            val content = binding.content.text?.toString().orEmpty()
 
-            if (content.isBlank()) {
-                Toast.makeText(
-                    this,
-                    R.string.content_is_blank_error,
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-                return@setOnClickListener
+        viewModel.edited.observe(this) { post ->
+            if (post.id != 0L) {
+                binding.content.setText(post.content)
+                binding.content.requestFocus()
+                AndroidUtils.showKeyboard(binding.content)
+                binding.editPanel.visibility = View.VISIBLE
+            } else {
+                binding.content.setText("")
+                binding.editPanel.visibility = View.GONE
             }
+        }
+
+        binding.save.setOnClickListener {
+            val content = binding.content.text.toString()
+            if (content.isBlank()) return@setOnClickListener
             viewModel.savePost(content)
             binding.content.setText("")
             binding.content.clearFocus()
+            AndroidUtils.hideKeyboard(binding.content)
+        }
 
+        binding.cancel.setOnClickListener {
+            viewModel.cancelEdit()
+            binding.content.setText("")
+            binding.content.clearFocus()
             AndroidUtils.hideKeyboard(binding.content)
         }
     }
