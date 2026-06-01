@@ -10,7 +10,6 @@ import com.krecsa.howl.R
 import com.krecsa.howl.databinding.CardPostBinding
 import com.krecsa.howl.dto.Post
 import com.krecsa.howl.formatCount
-import kotlin.collections.remove
 
 
 typealias LikeListener = (Post) -> Unit
@@ -60,16 +59,13 @@ class PostViewHolder(
             author.text = post.author
             published.text = post.published
             content.text = post.content
-            likeCount.text = formatCount(post.likes)
-            like.setImageResource(if (post.likedByMe) R.drawable.ic_liked_24 else R.drawable.ic_like_24)
-            like.setOnClickListener {
-                likeListener(post)
-            }
 
-            shareCount.text = formatCount(post.shares)
-            share.setOnClickListener {
-                shareListener(post)
-            }
+            like.isChecked = post.likedByMe
+            like.text = formatCount(post.likes)
+            like.setOnClickListener { likeListener(post) }
+
+            share.text = formatCount(post.shares)
+            share.setOnClickListener { shareListener(post) }
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {

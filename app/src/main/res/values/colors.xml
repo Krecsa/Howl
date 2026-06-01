@@ -2,5 +2,7 @@
     <color name="primary">#616161</color>
     <color name="primary_dark">#424242</color>
     <color name="accent">#FF6B00</color>
+    <color name="like_checked">#FF6B00</color>
+    <color name="like_unchecked">#9E9E9E</color>
     <color name="background">#FFFFFF</color>
 </resources>
